@@ -1,5 +1,6 @@
 package com.hinohunomi.todaysonething;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
 
         builder.setAutoCancel(true);
+        builder.setDefaults(Notification.DEFAULT_ALL);
         builder.setTicker("Ticker");
         builder.setContentTitle("Today's One Thing");
         builder.setContentText(Globals.thingManager.GetMessage());
