@@ -60,6 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateMessage() {
         TextView tv = (TextView) findViewById(R.id.message);
-        tv.setText(Globals.thingManager.GetMessage());
+        tv.setText(Globals.thingManager.GetMessage(getApplicationContext()));
     }
 }

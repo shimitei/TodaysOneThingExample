@@ -1,11 +1,13 @@
 package com.hinohunomi.todaysonething;
 
+import android.content.Context;
+
 import java.util.Random;
 
 public class RandomMessage implements ITakeMessage {
     private Random random = new Random();
 
-    public String GetMessage() {
+    public String GetMessage(Context context) {
         int index = random.nextInt(messages.length);
         return messages[index];
     }

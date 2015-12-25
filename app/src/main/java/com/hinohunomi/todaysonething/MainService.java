@@ -99,7 +99,7 @@ public class MainService extends Service {
         builder.setDefaults(Notification.DEFAULT_ALL);
         builder.setTicker("Ticker");
         builder.setContentTitle("Today's One Thing");
-        builder.setContentText(Globals.thingManager.GetMessage());
+        builder.setContentText(Globals.thingManager.GetMessage(this));
         builder.setWhen(System.currentTimeMillis());
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);

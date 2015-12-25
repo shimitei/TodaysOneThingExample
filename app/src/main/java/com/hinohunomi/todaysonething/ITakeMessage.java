@@ -1,5 +1,7 @@
 package com.hinohunomi.todaysonething;
 
+import android.content.Context;
+
 public interface ITakeMessage {
-    String GetMessage();
+    String GetMessage(Context context);
 }
