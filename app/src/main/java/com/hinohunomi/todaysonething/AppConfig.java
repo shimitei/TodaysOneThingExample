@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Date;
+
 public class AppConfig {
     private SharedPreferences pref;
 
@@ -34,6 +36,24 @@ public class AppConfig {
         String messageDate = pref.getString("MESSAGE_DATE", null);
         if (messageDate != null && MyDateUtil.getTodayString("yyyy-MM-dd").compareTo(messageDate) == 0) {
             result = true;
+        }
+        return result;
+    }
+
+    public void setLastNotifyTime(Date date) {
+        SharedPreferences.Editor editor = getEditor();
+        editor.putLong("LAST_NOTIFY_TIME", date.getTime());
+        editor.commit();
+    }
+
+    public Date getLastNotifyTime() {
+        Date result;
+        long time = pref.getLong("LAST_NOTIFY_TIME", 0);
+        if (time == 0) {
+            result = new Date();
+            setLastNotifyTime(result);
+        } else {
+            result = new Date(time);
         }
         return result;
     }

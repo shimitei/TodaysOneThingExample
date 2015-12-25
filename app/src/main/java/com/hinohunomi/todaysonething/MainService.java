@@ -11,6 +11,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.Date;
+
 public class MainService extends Service {
     private final static String TAG = "MainService";
     private final static String EXTRA_ALARM = "alarm";
@@ -32,7 +34,10 @@ public class MainService extends Service {
         Log.d(TAG, "onStartCommand");
         if (intent.getStringExtra(EXTRA_ALARM) != null) {
             Log.d(TAG, "alarm receive");
-            doNotify();
+            if (isAllowNotify()) {
+                doNotify();
+                updateLastNotifyTime();
+            }
         }
         return START_STICKY;
     }
@@ -60,9 +65,8 @@ public class MainService extends Service {
                     -1,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            //TODO every 1 day
             long time = System.currentTimeMillis();
-            long delay = 60 * 1000; //test 1 min
+            long delay = AlarmManager.INTERVAL_HOUR; //every 1 hour
             am.setRepeating(AlarmManager.RTC, time, delay, pi);
             Log.d(TAG, "set Alarm");
         }
@@ -108,5 +112,31 @@ public class MainService extends Service {
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
         manager.notify(0, builder.build());
+    }
+
+    /**
+     * 1.not same day
+     * 2.from 09:00 to 17:59
+     * @return
+     */
+    private boolean isAllowNotify() {
+        boolean result = false;
+        AppConfig conf = new AppConfig(this);
+        Date last = conf.getLastNotifyTime();
+        Date now = new Date();
+        if (last.getDate() != now.getDate()
+            || last.getMonth() != now.getMonth()
+            || last.getYear() != now.getYear()) {
+            int hour = now.getHours();
+            if (hour >= 9 && hour <= 17) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private void updateLastNotifyTime() {
+        AppConfig conf = new AppConfig(this);
+        conf.setLastNotifyTime(new Date());
     }
 }
