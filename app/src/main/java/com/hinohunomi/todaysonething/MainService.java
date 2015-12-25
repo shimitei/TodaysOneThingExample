@@ -1,11 +1,14 @@
 package com.hinohunomi.todaysonething;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 public class MainService extends Service {
@@ -28,8 +31,8 @@ public class MainService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
         if (intent.getStringExtra(EXTRA_ALARM) != null) {
-            //TODO notifitate
             Log.d(TAG, "alarm receive");
+            doNotify();
         }
         return START_STICKY;
     }
@@ -86,5 +89,24 @@ public class MainService extends Service {
                 PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(pi);
         pi.cancel();
+    }
+
+    private void doNotify() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
+
+        builder.setAutoCancel(true);
+        builder.setDefaults(Notification.DEFAULT_ALL);
+        builder.setTicker("Ticker");
+        builder.setContentTitle("Today's One Thing");
+        builder.setContentText(Globals.thingManager.GetMessage());
+        builder.setWhen(System.currentTimeMillis());
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        builder.setContentIntent(contentIntent);
+
+        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+        manager.notify(0, builder.build());
     }
 }
